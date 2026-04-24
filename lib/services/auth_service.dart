@@ -5,21 +5,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:eventaccess_app/services/api_service.dart';
 import 'package:eventaccess_app/models/user.dart';
 
-/// Servicio de autenticación que gestiona login, logout y persistencia de sesión
+/// Servicio auth manejando login, logout, persistencia sesión
 class AuthService {
   final ApiService _apiService = ApiService();
   User? _currentUser;
 
   User? get currentUser => _currentUser;
 
-  // Session Persistence
+  // Cosas de sesión
 
   Future<void> saveLoginState() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
   }
 
-  // Authentication Methods
+  // Métodos auth
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();

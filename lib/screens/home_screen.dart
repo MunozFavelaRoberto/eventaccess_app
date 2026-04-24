@@ -10,6 +10,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _selectedIndex = 0;
+
+  void _onDestinationSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Widget _buildBody(int index) {
+    switch (index) {
+      case 0:
+        return const Center(
+          child: Text('Bienvenido'),
+        );
+      case 1:
+        return const Center(
+          child: Text('Eventos'),
+        );
+      default:
+        return const Center(
+          child: Text('Bienvenido'),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,20 +52,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      endDrawer: const AppDrawer(),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Home',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Text('Bienvenido'),
-          ],
-        ),
-      ),
+       endDrawer: const AppDrawer(),
+       body: _buildBody(_selectedIndex),
+       bottomNavigationBar: NavigationBar(
+         selectedIndex: _selectedIndex,
+         onDestinationSelected: _onDestinationSelected,
+         destinations: const [
+           NavigationDestination(
+             icon: Icon(Icons.home_outlined),
+             selectedIcon: Icon(Icons.home),
+             label: 'Inicio',
+           ),
+           NavigationDestination(
+             icon: Icon(Icons.event_outlined),
+             selectedIcon: Icon(Icons.event),
+             label: 'Eventos',
+           ),
+         ],
+       ),
     );
   }
 }

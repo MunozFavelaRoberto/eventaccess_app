@@ -11,7 +11,7 @@ import 'package:eventaccess_app/screens/profile_screen.dart';
 import 'package:eventaccess_app/utils/app_routes.dart';
 
 Future<void> main() async {
-  // Necesario para que SharedPreferences funcione antes del runApp
+  // Para SharedPreferences antes runApp
   WidgetsFlutterBinding.ensureInitialized();
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -33,7 +33,7 @@ Future<void> main() async {
   );
 }
 
-// Navegador global para empujar rutas desde Widgets fuera del árbol
+// Nav global para push rutas fuera del árbol
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 const MethodChannel _screenChannel = MethodChannel(
   'com.example.eventaccess_app/screen',
@@ -135,12 +135,12 @@ class _LockWrapperState extends State<LockWrapper> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // Verificar estado de autorización
+    // Chequear estado auth
     final dataProvider = context.watch<DataProvider>();
 
-    // Solo mostrar pantalla de "No Autorizado" después de que:
-    // 1. Se haya intentado obtener los datos del usuario (hasAttemptedFetch)
-    // 2. Y el servidor haya rechazado la solicitud explícitamente
+    // Solo mostrar 'No Autorizado' después de:
+    // 1. Intento fetch datos usuario (hasAttemptedFetch)
+    // 2. Y servidor rechazó explícitamente
     if (dataProvider.hasAttemptedFetch && dataProvider.isUnauthorized) {
       return _buildUnauthorizedScreen(context, dataProvider);
     }

@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // Singleton pattern
+  // Singleton
   static final ApiService _instance = ApiService._internal();
   factory ApiService() => _instance;
   ApiService._internal();
 
   final http.Client _client = _createHttpClient();
 
-  // URL de la API real
+  // URL API real
   static const String baseUrlApi =
       'https://apipagoselectronicos.svr.com.mx/api';
   String get baseUrl => baseUrlApi;
@@ -132,7 +132,7 @@ class ApiService {
     }
   }
 
-  // Cerrar cliente (llamar al salir de la app)
+  // Cerrar cliente (llamar al salir app)
   void dispose() {
     _client.close();
   }

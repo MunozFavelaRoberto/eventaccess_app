@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _authService = Provider.of<AuthService>(context, listen: false);
     _apiService = ApiService();
-    // No need to load biometrics
+    // Saltar carga biometría
     _loading = false;
   }
 
@@ -213,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             dataProvider.updateUser(updatedUser);
           }
 
-          // Delay obligatorio de 1 segundo para mostrar al usuario que su petición está siendo procesada
+          // Delay 1 seg para mostrar petición procesando
           await Future.delayed(const Duration(seconds: 1));
 
           if (!mounted) return;
@@ -281,9 +281,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   child: Consumer<DataProvider>(
                     builder: (context, provider, child) {
-                      // Si no está autorizado, mostrar "No autorizado"
+                      // Si no autorizado, mostrar 'No Autorizado'
                       if (provider.isUnauthorized) {
-                        // Marcar que ya intentamos cargar
+                        // Marcar que intentamos cargar
                         if (!_initialLoadComplete) {
                           _initialLoadComplete = true;
                         }
@@ -317,10 +317,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       }
 
-                      // Si el usuario es null, intentar cargarlo UNA SOLA VEZ
-                      // Solo mostrar indicador de carga si isLoading es true Y user es null
+                      // Si user null, intentar cargar una vez
+                      // Solo mostrar loader si isLoading y user null
                       if (_loading) {
-                        // Loading general de la vista - mostrar indicador de carga completo
+                        // Loading vista general - mostrar loader full
                         return const SizedBox(
                           height: 400,
                           child: Center(
@@ -338,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       if (provider.user == null) {
                         if (provider.isLoading) {
-                          // Está cargando, mostrar indicador
+                          // Cargando, mostrar indicador
                           return const Center(
                             child: CircularProgressIndicator(
                               color: Colors.green,
@@ -346,7 +346,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         }
 
-                        // No está cargando pero user es null - intentar cargar
+                        // No cargando pero user null - intentar cargar
                         if (!provider.hasAttemptedFetch) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             provider.fetchUser();
@@ -358,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         }
 
-                        // Ya intentamos cargar y sigue siendo null - podría ser error de red
+                        // Intentamos cargar pero sigue null - quizás error red
                         return Center(
                           child: Container(
                             padding: const EdgeInsets.all(24),

@@ -1,24 +1,22 @@
 class AppRoutes {
-  // Rutas de autenticación
+// Rutas auth
   static const String login = '/login';
+  static const String register = '/register';
 
-  // Rutas principales
+  // Rutas main
   static const String home = '/home';
   static const String profile = '/profile';
-  static const String payment = '/payment';
-  static const String paymentSuccess = '/payment-success';
 
-  // Rutas de tarjetas
+  // Rutas tarjetas
   static const String cards = '/cards';
   static const String addCard = '/add-card';
 
-  // Rutas de facturación
+  // Rutas facturación
   static const String billing = '/billing';
-  static const String editBilling = '/edit-billing';
+  static const String billingHistory = '/billing-history';
 
-  // Rutas de OpenPay
-  static const String openpayDeviceSession = '/openpay-device-session';
-  static const String openpayWebview = '/openpay-webview';
+  // Rutas OpenPay
+  static const String openPay = '/openpay';
 
   // Constructor privado para evitar instanciación
   AppRoutes._();

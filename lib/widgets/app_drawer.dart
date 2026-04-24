@@ -63,7 +63,7 @@ class AppDrawer extends StatelessWidget {
                     );
                     final overlayState = Overlay.of(context);
 
-                    // 2. Diálogo de confirmación
+                    // 2. Diálogo confirmar
                     final shouldLogout = await showDialog<bool>(
                       context: context,
                       builder: (BuildContext dialogContext) {
@@ -102,7 +102,7 @@ class AppDrawer extends StatelessWidget {
 
                     if (shouldLogout != true) return;
 
-                    // 3. Mostrar diálogo de cierre de sesión usando overlayState
+                    // 3. Mostrar diálogo logout con overlay
                     final overlayEntry = OverlayEntry(
                       builder: (context) => PopScope(
                         canPop: false,
@@ -135,16 +135,16 @@ class AppDrawer extends StatelessWidget {
 
                     overlayState.insert(overlayEntry);
 
-                    // 4. Resetear estado de autorización
+                    // 4. Reset estado auth
                     dataProvider.resetUnauthorized();
 
-                    // 5. Borrar estado de login
+                    // 5. Limpiar estado login
                     await authService.logout();
 
-                    // Delay obligatorio de 1 segundo para mostrar feedback al usuario
+                    // Delay 1 seg para feedback usuario
                     await Future.delayed(const Duration(seconds: 1));
 
-                    // 6. Cerrar el diálogo de logout y volver al Login
+                    // 6. Cerrar diálogo e ir a Login
                     overlayEntry
                         .remove(); // Cerrar el overlay de "Cerrando sesión..."
                     navigator.pushNamedAndRemoveUntil(

@@ -10,7 +10,7 @@ class DataProvider extends ChangeNotifier {
   final ApiService _apiService;
   final AuthService? _authService;
 
-  // Clave para SharedPreferences
+  // Clave para SharedPrefs
   static const String _userDataKey = 'cached_user_data';
 
   DataProvider({AuthService? authService, ApiService? apiService})
@@ -24,7 +24,7 @@ class DataProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isUnauthorized = false;
   bool _isInitialLoading = true;
-  bool _hasAttemptedFetch = false; // Track si ya intentamos obtener datos
+  bool _hasAttemptedFetch = false;   // Track si intentamos fetch data
 
   User? get user => _user;
   bool get isLoading => _isLoading;
@@ -32,7 +32,7 @@ class DataProvider extends ChangeNotifier {
   bool get isInitialLoading => _isInitialLoading;
   bool get hasAttemptedFetch => _hasAttemptedFetch;
 
-  // Cargar usuario desde cache local
+  // Cargar user de cache local
   Future<void> _loadCachedUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -50,7 +50,7 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  // Guardar usuario en cache local
+  // Guardar user en cache local
   Future<void> _cacheUser() async {
     if (_user == null) return;
     try {
@@ -63,7 +63,7 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  // Limpiar cache de usuario (logout)
+  // Limpiar cache user (logout)
   Future<void> _clearUserCache() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -77,19 +77,19 @@ class DataProvider extends ChangeNotifier {
   Future<void> fetchUser() async {
     _isLoading = true;
     _hasAttemptedFetch = true;
-    // No llamar notifyListeners() aquí para evitar error de build durante la construcción del widget
+    // No llamar notifyListeners() aquí para evitar error build
 
     try {
       final token = await _authService?.getToken();
       if (token != null) {
-        // Obtener datos del perfil desde la API
+        // Obtener data perfil de API
         final data = await _apiService.get(
           '/client/profile',
           headers: {'Authorization': 'Bearer $token'},
         );
         debugPrint('Profile API response: $data');
 
-        // Verificar estructura de la respuesta
+        // Chequear estructura respuesta
         if (data == null) {
           debugPrint('Profile API returned null');
           _isLoading = false;
@@ -97,7 +97,7 @@ class DataProvider extends ChangeNotifier {
           return;
         }
 
-        // Obtener los datos del perfil directamente de la respuesta API
+        // Tomar data perfil directo de respuesta API
         final profileData = data['data']?['item'];
         if (profileData == null) {
           debugPrint('Profile data structure unexpected: $data');
@@ -106,7 +106,7 @@ class DataProvider extends ChangeNotifier {
           return;
         }
 
-        // La estructura es: data['data']['item']['user'] con full_name y email
+        // Estructura: data['data']['item']['user'] con full_name y email
         final userData = profileData['user'];
         if (userData == null) {
           debugPrint('User data not found in profile: $data');
@@ -123,7 +123,7 @@ class DataProvider extends ChangeNotifier {
           email: userData['email'] as String? ?? 'email@desconocido.com',
         );
         _isInitialLoading = false;
-        // Éxito - usuario válido
+        // Éxito - user válido
         _isUnauthorized = false;
         debugPrint(
           'Usuario obtenido de perfil: ${_user!.fullName} - Cliente: ${_user!.clientNumber}',
@@ -133,7 +133,7 @@ class DataProvider extends ChangeNotifier {
         await _cacheUser();
       } else {
         _isInitialLoading = false;
-        // Token null - no hay sesión
+        // Token null - sin sesión
         _isUnauthorized = true;
         _user = null;
       }
@@ -149,7 +149,7 @@ class DataProvider extends ChangeNotifier {
         _isUnauthorized = true;
         _user = null;
       } else {
-        // Error de red u otro tipo - no marcar como no autorizado
+        // Error red/otro - no marcar no autorizado
         // Mantener el estado actual pero asegurar que se intentó
         _isUnauthorized = false;
       }
@@ -159,13 +159,13 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  // Método para actualizar el usuario
+  // Método para actualizar user
   void updateUser(User newUser) {
     _user = newUser;
     notifyListeners();
   }
 
-  // Resetear estado de autorización (para cuando usuario hace logout o inicia sesión)
+  // Reset estado auth (en logout/login)
   void resetUnauthorized() {
     _isUnauthorized = false;
     _user = null;
@@ -174,7 +174,7 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Método para establecer usuario manualmente (después de login exitoso)
+  // Método para set user manual (después login exitoso)
   void setUser(User user) {
     _user = user;
     _isUnauthorized = false;
@@ -182,13 +182,13 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Refresh completo para pull-to-refresh (usa notifyListeners)
+  // Refresh full para pull-to-refresh (llama notifyListeners)
   Future<void> refreshAllData() async {
     _isInitialLoading = false;
 
     await fetchUser();
 
-    // Solo hacer notifyListeners() después de que todo termine
+    // Solo llamar notifyListeners() después de todo terminado
     notifyListeners();
   }
 }
