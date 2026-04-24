@@ -8,6 +8,8 @@ import 'package:eventaccess_app/services/auth_service.dart';
 import 'package:eventaccess_app/screens/login_screen.dart';
 import 'package:eventaccess_app/screens/home_screen.dart';
 import 'package:eventaccess_app/screens/profile_screen.dart';
+import 'package:eventaccess_app/screens/event_tickets_screen.dart';
+import 'package:eventaccess_app/screens/ticket_detail_screen.dart';
 import 'package:eventaccess_app/utils/app_routes.dart';
 
 Future<void> main() async {
@@ -65,6 +67,8 @@ class EventAccessApp extends StatelessWidget {
         AppRoutes.login: (context) => const LoginScreen(),
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.eventTickets: (context) => const EventTicketsScreen(),
+        AppRoutes.ticketDetail: (context) => const TicketDetailScreen(),
       },
     );
   }

@@ -18,6 +18,10 @@ class AppRoutes {
   // Rutas OpenPay
   static const String openPay = '/openpay';
 
+  // Rutas de eventos
+  static const String eventTickets = '/event-tickets';
+  static const String ticketDetail = '/ticket-detail';
+
   // Constructor privado para evitar instanciación
   AppRoutes._();
 }

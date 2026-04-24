@@ -37,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => _initialLoadComplete = false);
     }
     final dataProvider = context.read<DataProvider>();
+    await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
     await dataProvider.fetchUser();
   }
 

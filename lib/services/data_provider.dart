@@ -83,6 +83,7 @@ class DataProvider extends ChangeNotifier {
       final token = await _authService?.getToken();
       if (token != null) {
         // Obtener data perfil de API
+        await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
         final data = await _apiService.get(
           '/client/profile',
           headers: {'Authorization': 'Bearer $token'},
