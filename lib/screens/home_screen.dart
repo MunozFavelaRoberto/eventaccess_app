@@ -53,10 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
        endDrawer: const AppDrawer(),
        body: _buildBody(_selectedIndex),
-       bottomNavigationBar: NavigationBar(
-         selectedIndex: _selectedIndex,
-         onDestinationSelected: _onDestinationSelected,
-         destinations: const [
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: _onDestinationSelected,
+          indicatorColor: Colors.grey,
+          destinations: const [
            NavigationDestination(
              icon: Icon(Icons.home_outlined),
              selectedIcon: Icon(Icons.home),
