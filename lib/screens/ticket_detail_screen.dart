@@ -4,6 +4,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 class TicketDetailScreen extends StatelessWidget {
   const TicketDetailScreen({super.key});
 
+  String _formatTime(String time) {
+    List<String> parts = time.split(':');
+    int hour = int.parse(parts[0]);
+    String period = hour >= 12 ? 'PM' : 'AM';
+    int displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+    return '$displayHour:${parts[1]} $period';
+  }
+
   @override
   Widget build(BuildContext context) {
     final ticket = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -23,7 +31,7 @@ class TicketDetailScreen extends StatelessWidget {
             onPressed: () {
               // Generar y descargar PDF del boleto
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('PDF del boleto generado')),
+                const SnackBar(content: Text('PDF del boleto')),
               );
             },
               tooltip: 'Descargar PDF',
@@ -40,13 +48,17 @@ class TicketDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text(ticket['date'], style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
-            Text(ticket['time'], style: const TextStyle(fontSize: 18)),
+            Text(_formatTime(ticket['time']), style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
             Text(ticket['type'], style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 20),
-            QrImageView(
-              data: ticket['qrCode'],
-              size: 200.0,
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(8.0),
+              child: QrImageView(
+                data: ticket['qrCode'],
+                size: 200.0,
+              ),
             ),
           ],
         ),

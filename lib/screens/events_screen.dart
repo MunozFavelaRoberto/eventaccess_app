@@ -19,7 +19,7 @@ class _EventsScreenState extends State<EventsScreen> {
   }
 
   Future<void> _loadEvents() async {
-    // final events = await apiService.get('/events');
+    // TODO: final events = await apiService.get('/events');
     await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
     setState(() {
       _events = [
@@ -33,42 +33,46 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis eventos'),
+        title: const Text('Eventos'),
       ),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Colors.green),
             )
-          : ListView.builder(
-              itemCount: _events.length,
-              itemBuilder: (context, index) {
-                final event = _events[index];
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        event['imageUrl'] as String,
-                        fit: BoxFit.cover,
+          : RefreshIndicator(
+              onRefresh: _loadEvents,
+              color: Colors.green,
+              child: ListView.builder(
+                itemCount: _events.length,
+                itemBuilder: (context, index) {
+                  final event = _events[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.grey.shade700,
+                    child: ListTile(
+                      leading: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset(
+                          event['imageUrl'] as String,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                      title: Text(event['name'] as String, style: const TextStyle(color: Colors.white)),
+                      subtitle: Text('${event['date']} - ${event['location']}', style: const TextStyle(color: Colors.white)),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.eventTickets,
+                          arguments: event,
+                        );
+                      },
                     ),
-                    title: Text(event['name'] as String),
-                    subtitle: Text('${event['date']} - ${event['location']}'),
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.eventTickets,
-                        arguments: event,
-                      );
-                    },
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }

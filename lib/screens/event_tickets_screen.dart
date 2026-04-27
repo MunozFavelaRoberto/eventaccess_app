@@ -21,7 +21,7 @@ class _EventTicketsScreenState extends State<EventTicketsScreen> {
   }
 
   Future<void> _loadTickets() async {
-    // final tickets = await apiService.get('/events/${_event['id']}/tickets');
+    // TODO: final tickets = await apiService.get('/events/${_event['id']}/tickets');
     await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
     if (context.mounted) {
       setState(() {
@@ -37,7 +37,6 @@ class _EventTicketsScreenState extends State<EventTicketsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Boletos - ${_event['name']}'),
@@ -46,48 +45,53 @@ class _EventTicketsScreenState extends State<EventTicketsScreen> {
           ? const Center(
               child: CircularProgressIndicator(color: Colors.green),
             )
-          : ListView.builder(
-              itemCount: _tickets.length,
-              itemBuilder: (context, index) {
-                final ticket = _tickets[index];
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        _event['imageUrl'] as String,
-                        fit: BoxFit.cover,
+          : RefreshIndicator(
+              onRefresh: _loadTickets,
+              color: Colors.green,
+              child: ListView.builder(
+                itemCount: _tickets.length,
+                itemBuilder: (context, index) {
+                  final ticket = _tickets[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.grey.shade700,
+                    child: ListTile(
+                      leading: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset(
+                          _event['imageUrl'] as String,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    title: Text('${ticket['event']} - ${ticket['type']}'),
-                    subtitle: Text('${ticket['date']} ${ticket['time']}'),
-                    onTap: () async {
-                      // Mostrar loading
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(
-                            child: CircularProgressIndicator(color: Colors.green),
-                          );
-                        },
-                      );
-                      // Delay obligatorio
-                      await Future.delayed(const Duration(seconds: 1));
-                      if (context.mounted) {
-                        Navigator.of(context).pop(); // Cerrar loading
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.ticketDetail,
-                          arguments: ticket,
+                      title: Text('${ticket['event']} - ${ticket['type']}', style: const TextStyle(color: Colors.white)),
+                      subtitle: Text('${ticket['date']} ${ticket['time']}', style: const TextStyle(color: Colors.white)),
+                      onTap: () async {
+                        // Mostrar loading
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return const Center(
+                              child: CircularProgressIndicator(color: Colors.green),
+                            );
+                          },
                         );
-                      }
-                    },
-                  ),
-                );
-              },
+                        // Delay obligatorio
+                        await Future.delayed(const Duration(seconds: 1));
+                        if (context.mounted) {
+                          Navigator.of(context).pop(); // Cerrar loading
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.ticketDetail,
+                            arguments: ticket,
+                          );
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
     );
   }
