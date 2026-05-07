@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eventaccess_app/widgets/client_number_header.dart';
 import 'package:eventaccess_app/services/theme_provider.dart';
+import 'package:eventaccess_app/services/data_provider.dart';
+// ignore: unused_import
+import 'package:eventaccess_app/models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,29 +14,24 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late Map<String, dynamic> user;
-  bool _isLoading = true;
   bool _isUpdatingEmail = false;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
-    if (mounted) {
-      setState(() => _isLoading = false);
-    }
+    // No need for _loadData since DataProvider handles loading
   }
 
   Future<void> _refreshData() async {
-    await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
+    final dataProvider = context.read<DataProvider>();
+    await dataProvider.refreshAllData();
   }
 
   Future<void> _editEmail() async {
-    final controller = TextEditingController(text: user['email']);
+    final dataProvider = context.read<DataProvider>();
+    final user = dataProvider.user;
+    if (user == null) return;
+    final controller = TextEditingController(text: user.email);
 
     final newEmail = await showGeneralDialog<String>(
       context: context,
@@ -106,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () async {
                             final email = controller.text.trim();
                             if (_validateEmail(email) &&
-                                email != user['email']) {
+                                email != user.email) {
                               await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
                               setState(() => _isUpdatingEmail = true);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -142,23 +140,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
 
-    if (newEmail != null) {
-      // Delay obligatorio de 1 segundo para mostrar al usuario que su petición está siendo procesada
-      await Future.delayed(const Duration(seconds: 1));
+      if (newEmail != null) {
+        // TODO: Implementar API call para actualizar email
+        // Por ahora, solo mostrar mensaje
+        await Future.delayed(const Duration(seconds: 1));
 
-      if (!mounted) return;
-      setState(() {
-        user['email'] = newEmail;
-        _isUpdatingEmail = false;
-      });
+        if (!mounted) return;
+        setState(() {
+          _isUpdatingEmail = false;
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Correo actualizado correctamente'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Correo actualizado correctamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
   }
 
   bool _validateEmail(String email) {
@@ -168,7 +166,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    final dataProvider = context.watch<DataProvider>();
+    final user = dataProvider.user;
+    final isLoading = dataProvider.isLoading;
+
+    if (isLoading || user == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator(color: Colors.green)),
       );
@@ -176,15 +178,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final theme = Theme.of(context);
     final isDark = context.select<ThemeProvider, bool>((p) => p.isDark);
-
-    // Código hardcodeado para mostrar vista
-    user = {
-      'clientNumber': 'A123456789',
-      'fullName': 'María González López',
-      'email': 'maria.gonzalez@email.com',
-      'status': 'Activo',
-      'balance': 250.75,
-    };
 
     return PopScope(
       canPop: !_isUpdatingEmail,
@@ -221,26 +214,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Column(
                               children: [
-                                ListTile(
-                                  title: const Text('Nombre completo'),
-                                  subtitle: Text(user['fullName'] as String),
-                                ),
+                                 ListTile(
+                                   title: const Text('Nombre completo'),
+                                   subtitle: Text(user.fullName),
+                                 ),
                                 const Divider(),
                                 ListTile(
                                   title: const Text('Correo electrónico'),
-                                  subtitle: _isUpdatingEmail
-                                      ? const Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 12,
-                                              height: 12,
-                                              child: CircularProgressIndicator(strokeWidth: 2),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text('Actualizando...'),
-                                          ],
-                                        )
-                                      : Text(user['email'] as String),
+                                   subtitle: _isUpdatingEmail
+                                       ? const Row(
+                                           children: [
+                                             SizedBox(
+                                               width: 12,
+                                               height: 12,
+                                               child: CircularProgressIndicator(strokeWidth: 2),
+                                             ),
+                                             SizedBox(width: 8),
+                                             Text('Actualizando...'),
+                                           ],
+                                         )
+                                       : Text(user.email),
                                   trailing: _isUpdatingEmail
                                       ? const SizedBox(
                                           width: 24,

@@ -27,7 +27,7 @@ Future<void> main() async {
           create: (context) => DataProvider(
             authService: Provider.of<AuthService>(context, listen: false),
             apiService: Provider.of<ApiService>(context, listen: false),
-          ),
+          )..fetchTickets(), // Cargar tickets al iniciar
         ),
       ],
       child: const EventAccessApp(),

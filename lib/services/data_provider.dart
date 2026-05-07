@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:eventaccess_app/models/user.dart';
+import 'package:eventaccess_app/models/event.dart';
+import 'package:eventaccess_app/models/ticket.dart';
 import 'package:eventaccess_app/services/api_service.dart';
 import 'package:eventaccess_app/services/auth_service.dart';
 
@@ -25,12 +27,16 @@ class DataProvider extends ChangeNotifier {
   bool _isUnauthorized = false;
   bool _isInitialLoading = true;
   bool _hasAttemptedFetch = false;   // Track si intentamos fetch data
+  List<Event> _events = [];
+  List<Ticket> _tickets = [];
 
   User? get user => _user;
   bool get isLoading => _isLoading;
   bool get isUnauthorized => _isUnauthorized;
   bool get isInitialLoading => _isInitialLoading;
   bool get hasAttemptedFetch => _hasAttemptedFetch;
+  List<Event> get events => _events;
+  List<Ticket> get tickets => _tickets;
 
   // Cargar user de cache local
   Future<void> _loadCachedUser() async {
@@ -118,8 +124,8 @@ class DataProvider extends ChangeNotifier {
 
         _user = User(
           clientNumber: profileData['client_number'] as String? ?? 'N/A',
-          status: 'Activo',
-          balance: 0.0,
+          status: profileData['status'] as String? ?? 'Desconocido',
+          balance: (profileData['balance'] as num?)?.toDouble() ?? 0.0,
           fullName: userData['full_name'] as String? ?? 'Usuario',
           email: userData['email'] as String? ?? 'email@desconocido.com',
         );
@@ -183,11 +189,59 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchTickets() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final token = await _authService?.getToken();
+      if (token != null) {
+        final data = await _apiService.get(
+          '/v1/attendees/tickets',
+          headers: {'Authorization': 'Bearer $token'},
+        );
+        debugPrint('Tickets API response: $data');
+
+        if (data != null && data['data'] != null && data['data']['items'] != null) {
+          final ticketsData = data['data']['items'] as List<dynamic>;
+          _tickets = ticketsData.map((item) => Ticket.fromJson(item as Map<String, dynamic>)).toList();
+
+          // Derivar eventos únicos de los tickets
+          final eventMap = <String, Event>{};
+          for (final ticket in _tickets) {
+            if (!eventMap.containsKey(ticket.name)) {
+              eventMap[ticket.name] = Event(
+                name: ticket.name,
+                placeName: ticket.placeName,
+                date: ticket.date,
+                receptionTime: ticket.receptionTime,
+                startTime: ticket.startTime,
+                endTime: ticket.endTime,
+              );
+            }
+          }
+          _events = eventMap.values.toList();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching tickets: $e');
+      // Mantener datos anteriores o manejar error
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  List<Ticket> getTicketsForEvent(String eventName) {
+    return _tickets.where((ticket) => ticket.name == eventName).toList();
+  }
+
   // Refresh full para pull-to-refresh (llama notifyListeners)
   Future<void> refreshAllData() async {
     _isInitialLoading = false;
 
     await fetchUser();
+    await fetchTickets();
 
     // Solo llamar notifyListeners() después de todo terminado
     notifyListeners();
