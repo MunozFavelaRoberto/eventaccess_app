@@ -101,27 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final pass = _passController.text.trim();
 
     if (email.isNotEmpty && pass.isNotEmpty) {
-      // final response = await _authService.login(email, pass);
+      final response = await _authService.login(email, pass);
 
-      // await Future.delayed(const Duration(seconds: 1));
-
-      // if (response != null) {
-      //   await _handleLoginSuccess();
-      // } else {
-      //   if (!mounted) return;
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(
-      //       content: Text('Credenciales incorrectas'),
-      //       backgroundColor: Colors.red,
-      //     ),
-      //   );
-      // }
-
-      if (email == "admin" && pass == "123") {
-        await Future.delayed(const Duration(seconds: 1));
+      if (response != null) {
         await _handleLoginSuccess();
       } else {
-        await Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

@@ -12,7 +12,7 @@ class ApiService {
 
   // URL API real
   static const String baseUrlApi =
-      'https://apipagoselectronicos.svr.com.mx/api';
+      'https://apidev.nexorapro.mx/api';
   String get baseUrl => baseUrlApi;
 
   static http.Client _createHttpClient() {
