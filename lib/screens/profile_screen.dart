@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eventaccess_app/widgets/client_number_header.dart';
 import 'package:eventaccess_app/services/theme_provider.dart';
-import 'package:eventaccess_app/services/data_provider.dart';
-// ignore: unused_import
-import 'package:eventaccess_app/models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,24 +11,34 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? user;
   bool _isUpdatingEmail = false;
 
   @override
   void initState() {
     super.initState();
-    // No need for _loadData since DataProvider handles loading
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
+    if (mounted) {
+      setState(() => user = {
+        'clientNumber': 'A123456789',
+        'fullName': 'María González López',
+        'email': 'maria.gonzalez@email.com',
+        'status': 'Activo',
+        'balance': 250.75,
+      });
+    }
   }
 
   Future<void> _refreshData() async {
-    final dataProvider = context.read<DataProvider>();
-    await dataProvider.refreshAllData();
+    await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
   }
 
   Future<void> _editEmail() async {
-    final dataProvider = context.read<DataProvider>();
-    final user = dataProvider.user;
-    if (user == null) return;
-    final controller = TextEditingController(text: user.email);
+    final controller = TextEditingController(text: user!['email']);
 
     final newEmail = await showGeneralDialog<String>(
       context: context,
@@ -104,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () async {
                             final email = controller.text.trim();
                             if (_validateEmail(email) &&
-                                email != user.email) {
+                                email != user!['email']) {
                               await Future.delayed(const Duration(seconds: 1)); // Delay obligatorio
                               setState(() => _isUpdatingEmail = true);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -141,12 +148,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
       if (newEmail != null) {
-        // TODO: Implementar API call para actualizar email
-        // Por ahora, solo mostrar mensaje
+        // Actualizar localmente (hardcoded)
         await Future.delayed(const Duration(seconds: 1));
 
         if (!mounted) return;
         setState(() {
+          user!['email'] = newEmail;
           _isUpdatingEmail = false;
         });
 
@@ -166,11 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
-    final user = dataProvider.user;
-    final isLoading = dataProvider.isLoading;
-
-    if (isLoading || user == null) {
+    if (user == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator(color: Colors.green)),
       );
@@ -214,10 +217,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Column(
                               children: [
-                                 ListTile(
-                                   title: const Text('Nombre completo'),
-                                   subtitle: Text(user.fullName),
-                                 ),
+                                  ListTile(
+                                    title: const Text('Nombre completo'),
+                                    subtitle: Text(user!['fullName']),
+                                  ),
                                 const Divider(),
                                 ListTile(
                                   title: const Text('Correo electrónico'),
@@ -233,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                              Text('Actualizando...'),
                                            ],
                                          )
-                                       : Text(user.email),
+                                        : Text(user!['email']),
                                   trailing: _isUpdatingEmail
                                       ? const SizedBox(
                                           width: 24,
