@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade700,
-        title: const Text('Event Access'),
+        title: Image.asset('assets/images/svr_logo.png', height: 40),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [

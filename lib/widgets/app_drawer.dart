@@ -18,7 +18,7 @@ class AppDrawer extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.grey.shade700),
             child: Center(
               child: Image.asset(
-                'assets/images/cmapa_logo.png',
+                'assets/images/svr_logo.png',
                 width: 80,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => const Text(

@@ -50,7 +50,7 @@ class EventAccessApp extends StatelessWidget {
     final isDark = themeProvider.isDark;
 
     return MaterialApp(
-      title: 'Event Access',
+      title: 'Nexora',
       navigatorKey: appNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
