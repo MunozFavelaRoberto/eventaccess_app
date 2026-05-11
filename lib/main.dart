@@ -15,6 +15,13 @@ import 'package:eventaccess_app/utils/app_routes.dart';
 Future<void> main() async {
   // Para SharedPreferences antes runApp
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Bloquear rotación a modo vertical
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   runApp(
