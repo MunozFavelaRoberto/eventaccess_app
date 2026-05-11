@@ -157,17 +157,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           Image.asset(
-                            'assets/images/cmapa_logo.png',
+                            'assets/images/svr_logo.png',
                             height: 100,
                             width: 100,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Text(
-                                  'EventAccess',
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                           ),
                           const SizedBox(height: 40),
 
