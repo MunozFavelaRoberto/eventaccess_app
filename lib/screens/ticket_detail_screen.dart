@@ -82,27 +82,31 @@ class TicketDetailScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                'Fecha:',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                            Flexible(
+                              child: SizedBox(
+                                width: 130,
+                                child: Text(
+                                  'Fecha:',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                             const SizedBox(width: 20),
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                'Horario:',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                            Flexible(
+                              child: SizedBox(
+                                width: 130,
+                                child: Text(
+                                  'Horario:',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ],
@@ -110,21 +114,25 @@ class TicketDetailScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                _formatDate(ticket.date),
-                                style: const TextStyle(fontSize: 16),
-                                textAlign: TextAlign.center,
+                            Flexible(
+                              child: SizedBox(
+                                width: 130,
+                                child: Text(
+                                  _formatDate(ticket.date),
+                                  style: const TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 20),
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                '${ticket.startTime.substring(0, 5)} - ${ticket.endTime.substring(0, 5)}',
-                                style: const TextStyle(fontSize: 16),
-                                textAlign: TextAlign.center,
+                            Flexible(
+                              child: SizedBox(
+                                width: 130,
+                                child: Text(
+                                  '${ticket.startTime.substring(0, 5)} - ${ticket.endTime.substring(0, 5)}',
+                                  style: const TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ],

@@ -29,7 +29,13 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   void initState() {
     super.initState();
-    // Los eventos se cargan automáticamente por DataProvider
+    // Cargar eventos solo si no están cargados
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final dataProvider = context.read<DataProvider>();
+      if (dataProvider.events.isEmpty && !dataProvider.isLoading) {
+        dataProvider.fetchTickets();
+      }
+    });
   }
 
   @override
@@ -41,6 +47,7 @@ class _EventsScreenState extends State<EventsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Eventos'),
+        centerTitle: true,
       ),
       body: isLoading
           ? const Center(
